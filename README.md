@@ -2,8 +2,7 @@
 
 A modern, responsive portfolio website showcasing my projects, skills, and journey as a developer.
 
-🔗 Live Demo: [Add your link here]  
-📂 GitHub Repo: [Add your repo link here]
+🔗 Live Demo: https://ananddangii20-portfolio.vercel.app/
 
 ---
 
