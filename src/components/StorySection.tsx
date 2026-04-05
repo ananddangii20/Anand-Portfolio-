@@ -24,6 +24,13 @@ const timelineData = [
     year: "2022 - 2024",
     desc: "Focused on science and analytical thinking.",
     percentage: "82.67%",
+  },  {
+    icon: "📘",
+    title: "MHT-CET Examination",
+    place: "Maharashtra State Board",
+    year: "2024",
+    desc: "Appeared for MHT-CET with focus on Physics, Chemistry, and Mathematics",
+    percentage: "97.63 Percentile",
   },
   {
     icon: "💻",

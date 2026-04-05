@@ -1,14 +1,30 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import profileImg from "@/assets/profile.jpg";
+import { useToast } from "@/hooks/use-toast";
 import FuzzyText from './FuzzyText';
 
 const roles = ["IT Student ", " Exploring AI", "Problem Solver"];
+const RESUME_URL = "/Anand dangi - Resume March 26.pdf";
 
 const HeroSection = () => {
+  const { toast } = useToast();
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayed, setDisplayed] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  const handleResumeClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (RESUME_URL !== "#") {
+      return;
+    }
+
+    event.preventDefault();
+    toast({
+      title: "Resume is not available",
+      description: "Please add your resume file in the public folder to enable this button.",
+      variant: "destructive",
+    });
+  };
 
   useEffect(() => {
     const current = roles[roleIndex];
@@ -69,9 +85,9 @@ const HeroSection = () => {
               </span>
             </div>
             <p className="text-muted-foreground leading-relaxed mb-8 max-w-md animate-fade-up" style={{ animationDelay: "240ms" }}>
-            I’m a curious developer focused on learning, building, and experimenting with modern technologies to create meaningful and practical solutions.
+              I’m a curious developer focused on learning, building, and experimenting with modern technologies to create meaningful and practical solutions.
             </p>
-            <div className="flex gap-4 animate-fade-up" style={{ animationDelay: "320ms" }}>
+            <div className="flex flex-wrap gap-3 animate-fade-up" style={{ animationDelay: "320ms" }}>
               <a
                 href="#projects"
                 className="px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm transition-all duration-200 hover:opacity-90 hover:shadow-lg hover:shadow-primary/20"
@@ -84,6 +100,23 @@ const HeroSection = () => {
               >
                 Contact
               </a>
+              <a
+                href={RESUME_URL}
+                onClick={handleResumeClick}
+                target="_blank"
+                rel="noreferrer"
+                className="px-6 py-3 rounded-xl border border-primary/30 text-primary font-medium text-sm transition-all duration-200 hover:bg-primary/10"
+              >
+                View Resume
+              </a>
+              {/* <a
+                href={RESUME_URL}
+                onClick={handleResumeClick}
+                download
+                className="px-6 py-3 rounded-xl border border-border text-foreground font-medium text-sm transition-all duration-200 hover:bg-secondary"
+              >
+                Download Resume
+              </a> */}
             </div>
           </motion.div>
 

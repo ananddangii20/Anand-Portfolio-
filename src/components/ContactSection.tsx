@@ -1,14 +1,63 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
+
+const GOOGLE_SHEETS_WEBHOOK_URL = import.meta.env.VITE_GOOGLE_SHEETS_WEBHOOK_URL;
 
 const ContactSection = () => {
+  const { toast } = useToast();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder — integrate with backend
-    alert("Thanks for reaching out! I'll get back to you soon.");
-    setForm({ name: "", email: "", message: "" });
+    if (!GOOGLE_SHEETS_WEBHOOK_URL) {
+      console.error("VITE_GOOGLE_SHEETS_WEBHOOK_URL is not configured");
+      toast({
+        title: "Form destination not configured",
+        description: "Set VITE_GOOGLE_SHEETS_WEBHOOK_URL to store submissions in Google Sheets.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      console.log("Submitting form to:", GOOGLE_SHEETS_WEBHOOK_URL);
+
+      const payload = {
+        ...form,
+        source: "portfolio-contact-form",
+        submittedAt: new Date().toISOString(),
+      };
+      console.log("Payload:", payload);
+
+      const response = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "no-cors",
+        body: JSON.stringify(payload),
+      });
+
+      console.log("Response received:", response);
+
+      toast({
+        title: "Message sent",
+        description: "Thanks for reaching out! Your details were saved successfully.",
+      });
+      setForm({ name: "", email: "", message: "" });
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast({
+        title: "Submission failed",
+        description: error instanceof Error ? error.message : "Could not save your message right now. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -59,9 +108,10 @@ const ContactSection = () => {
           />
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all"
+            disabled={isSubmitting}
+            className="w-full py-3 rounded-xl bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Send Message
+            {isSubmitting ? "Sending..." : "Send Message"}
           </button>
         </motion.form>
 
